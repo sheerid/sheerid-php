@@ -55,6 +55,11 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
+	function listAffiliationTypes() {
+		$resp = $this->get("/affiliationType", array());
+		return json_decode($resp["responseText"]);
+	}
+	
 	// TODO: implement other service methods
 	// ...
 	
