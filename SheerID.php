@@ -46,6 +46,15 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
+	function listOrganizations($type=null) {
+		$params = array();
+		if ($type) {
+			$params["type"] = $type;
+		}
+		$resp = $this->get("/organization", $params);
+		return json_decode($resp["responseText"]);
+	}
+	
 	// TODO: implement other service methods
 	// ...
 	
