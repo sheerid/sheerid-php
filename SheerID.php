@@ -37,6 +37,11 @@ class SheerID {
 		$resp = $this->get("/field");
 		return json_decode($resp["responseText"]);
 	}
+
+	function inquire($requestId) {
+		$resp = $this->get("/verification/$requestId");
+		return json_decode($resp["responseText"]);
+	}
 	
 	function verify($data, $org_id=null) {
 		if ($org_id) {
