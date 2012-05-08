@@ -86,7 +86,7 @@ class SheerID {
 		return $req->execute();
 	}
 	
-	function url($path) {
+	function url($path='') {
 		return sprintf("%s/rest/%s%s", $this->baseUrl, SHEERID_API_VERSION, $path);
 	}
 }
