@@ -51,10 +51,13 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
-	function listOrganizations($type=null) {
+	function listOrganizations($type=null, $name=null) {
 		$params = array();
 		if ($type) {
 			$params["type"] = $type;
+		}
+		if ($name) {
+			$params["name"] = $name;
 		}
 		$resp = $this->get("/organization", $params);
 		return json_decode($resp["responseText"]);
