@@ -27,10 +27,12 @@ class SheerID {
 	
 	var $accessToken;
 	var $baseUrl;
+	var $verbose;
 	
-	function SheerID($accessToken, $baseUrl=null){
+	function SheerID($accessToken, $baseUrl=null, $verbose=false){
 		$this->accessToken = $accessToken;
 		$this->baseUrl = $baseUrl ? $baseUrl : SHEERID_ENDPOINT_SANDBOX;
+		$this->verbose = $verbose;
 	}
 	
 	function listFields() {
@@ -43,11 +45,26 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
-	function verify($data, $org_id=null) {
-		if ($org_id) {
-			$data["organizationId"] = $org_id;
+	function verify($data, $org_id=null, $config=array()) {
+		$config_prefix = "_";
+		$post_data = array();
+		
+		// add config data w/ prefix to request
+		foreach ($config as $k => $v) {
+			$post_data["${config_prefix}${k}"] = $v;
 		}
-		$resp = $this->post("/verification", $data);
+		
+		// add personal info fields
+		foreach ($data as $k => $v) {
+			$post_data[$k] = $v;
+		}
+		
+		// add organization ID
+		if ($org_id) {
+			$post_data["organizationId"] = $org_id;
+		}
+		
+		$resp = $this->post("/verification", $post_data);
 		return json_decode($resp["responseText"]);
 	}
 	
@@ -85,12 +102,12 @@ class SheerID {
 	/* utility methods */
 	
 	function get($path, $params=array()) {
-		$req = new SheerIDRequest($this->accessToken, "GET", $this->url($path), $params);
+		$req = new SheerIDRequest($this->accessToken, "GET", $this->url($path), $params, $this->verbose);
 		return $req->execute();
 	}
 	
 	function post($path, $params=array()) {
-		$req = new SheerIDRequest($this->accessToken, "POST", $this->url($path), $params);
+		$req = new SheerIDRequest($this->accessToken, "POST", $this->url($path), $params, $this->verbose);
 		return $req->execute();
 	}
 	
@@ -104,12 +121,14 @@ class SheerIDRequest {
 	var $url;
 	var $params;
 	var $headers;
+	var $verbose;
 	
-	function SheerIDRequest($accessToken, $method, $url, $params=array()) {
+	function SheerIDRequest($accessToken, $method, $url, $params=array(), $verbose=false) {
 		$this->method = $method;
 		$this->url = $url;
 		$this->params = $params;
 		$this->headers = array("Authorization: Bearer $accessToken");
+		$this->verbose = $verbose;
 	}
 	
 	function execute() {
@@ -132,6 +151,12 @@ class SheerIDRequest {
 		if ("POST" === $this->method){
 			curl_setopt($ch, CURLOPT_POST, TRUE);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+			
+			if ($this->verbose) {
+				error_log("[SheerID] POST $url $query");
+			}
+		} else if ($this->verbose) {
+			error_log("[SheerID] GET $url");
 		}
 		
 		$data = curl_exec($ch);
