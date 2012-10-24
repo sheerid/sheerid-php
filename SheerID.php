@@ -95,6 +95,12 @@ class SheerID {
 			return null;
 		}
 	}
+	
+	function updateOrderId($requestId, $orderId) {
+		try {
+			$this->post("/verification/${requestId}/metadata", array("orderId" => $orderId));
+		} catch (Exception $e) {}
+	}
 
 	// TODO: implement other service methods
 	// ...
