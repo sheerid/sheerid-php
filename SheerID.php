@@ -85,9 +85,6 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
-	// TODO: implement other service methods
-	// ...
-	
 	function getAssetToken($request_id) {
 		try {
 			$resp = $this->post("/asset/token", array("requestId" => $request_id));
@@ -96,6 +93,31 @@ class SheerID {
 		} catch (Exception $e) {
 			var_dump($e);
 			return null;
+		}
+	}
+
+	// TODO: implement other service methods
+	// ...
+	
+	/* helper methods */
+
+	public function getFields($affiliation_types) {
+		//TODO: use service
+		$fields = array("FIRST_NAME", "LAST_NAME", "BIRTH_DATE");
+		
+		if (array_search("VETERAN", $affiliation_types) !== false) {
+			$fields[] = "STATUS_START_DATE";
+		}
+		
+		return $fields;
+	}
+	
+	public function getOrganizationType($affiliation_types) {
+		//TODO: improve / use service
+		if (array_search("ACTIVE_DUTY", $affiliation_types) !== false || array_search("VETERAN", $affiliation_types) !== false) {
+			return "MILITARY";
+		} else {
+			return "UNIVERSITY";
 		}
 	}
 	
