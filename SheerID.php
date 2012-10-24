@@ -68,6 +68,15 @@ class SheerID {
 		return json_decode($resp["responseText"]);
 	}
 	
+	function updateVerification($requestId, $data) {
+		$post_data = array();
+		foreach ($data as $k => $v) {
+			$post_data[$k] = $v;
+		}
+		$resp = $this->post("/verification/$requestId", $post_data);
+		return json_decode($resp["responseText"]);
+	}
+	
 	function listOrganizations($type=null, $name=null) {
 		$params = array();
 		if ($type) {
