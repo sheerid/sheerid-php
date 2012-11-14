@@ -100,8 +100,17 @@ class SheerID {
 			$json = json_decode($resp["responseText"]);
 			return $json->token;
 		} catch (Exception $e) {
-			var_dump($e);
 			return null;
+		}
+	}
+	
+	function revokeToken($token) {
+		try {
+			//TODO: update to use /token endpoint
+			$resp = $this->delete("/asset/token/" . $token);
+			return $resp["status"] == 204;
+		} catch (Exception $e) {
+			return false;
 		}
 	}
 	
@@ -145,6 +154,11 @@ class SheerID {
 	
 	function post($path, $params=array()) {
 		$req = new SheerIDRequest($this->accessToken, "POST", $this->url($path), $params, $this->verbose);
+		return $req->execute();
+	}
+	
+	function delete($path) {
+		$req = new SheerIDRequest($this->accessToken, "DELETE", $this->url($path), array(), $this->verbose);
 		return $req->execute();
 	}
 	
@@ -193,7 +207,11 @@ class SheerIDRequest {
 				error_log("[SheerID] POST $url $query");
 			}
 		} else if ($this->verbose) {
-			error_log("[SheerID] GET $url");
+			error_log(sprintf("[SheerID] %s %s", $this->method, $url));
+		}
+		
+		if ("DELETE" === $this->method) {
+	        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
 		
 		$data = curl_exec($ch);
@@ -202,13 +220,12 @@ class SheerIDRequest {
 			$err = curl_error($ch);
 			curl_close($ch);
 			
-			echo $err;
 			throw $err;
 		} else {
 			$status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			
-			if ($status != 200) {
-				throw new Exception("Server returned status code: $status");
+			if ($status != 200 && $status != 204) {
+				throw new Exception("Server returned status code: $status for url: $url");
 			}
 
 			$response = array(
