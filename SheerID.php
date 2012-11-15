@@ -110,10 +110,14 @@ class SheerID {
 		}
 	}
 	
-	function updateOrderId($requestId, $orderId) {
+	function updateMetadata($requestId, $meta) {
 		try {
-			$this->post("/verification/${requestId}/metadata", array("orderId" => $orderId));
+			$this->post("/verification/${requestId}/metadata", $meta);
 		} catch (Exception $e) {}
+	}
+	
+	function updateOrderId($requestId, $orderId) {
+		$this->updateMetadata($requestId, array("orderId" => $orderId));
 	}
 
 	// TODO: implement other service methods
