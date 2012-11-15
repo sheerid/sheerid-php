@@ -36,13 +36,11 @@ class SheerID {
 	}
 	
 	function listFields() {
-		$resp = $this->get("/field");
-		return json_decode($resp["responseText"]);
+		return $this->getJson("/field");
 	}
 
 	function inquire($requestId) {
-		$resp = $this->get("/verification/$requestId");
-		return json_decode($resp["responseText"]);
+		return $this->getJson("/verification/$requestId");
 	}
 	
 	function verify($data, $org_id=null, $config=array()) {
@@ -85,13 +83,11 @@ class SheerID {
 		if ($name) {
 			$params["name"] = $name;
 		}
-		$resp = $this->get("/organization", $params);
-		return json_decode($resp["responseText"]);
+		return $this->getJson("/organization", $params);
 	}
 	
 	function listAffiliationTypes() {
-		$resp = $this->get("/affiliationType", array());
-		return json_decode($resp["responseText"]);
+		return $this->getJson("/affiliationType");
 	}
 	
 	function getAssetToken($request_id) {
@@ -150,6 +146,11 @@ class SheerID {
 	function get($path, $params=array()) {
 		$req = new SheerIDRequest($this->accessToken, "GET", $this->url($path), $params, $this->verbose);
 		return $req->execute();
+	}
+
+	function getJson($path, $params=array()) {
+		$resp = $this->get($path, $params);
+		return json_decode($resp["responseText"]);
 	}
 	
 	function post($path, $params=array()) {
