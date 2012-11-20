@@ -102,8 +102,7 @@ class SheerID {
 	
 	function revokeToken($token) {
 		try {
-			//TODO: update to use /token endpoint
-			$resp = $this->delete("/asset/token/" . $token);
+			$resp = $this->delete("/token/$token");
 			return $resp["status"] == 204;
 		} catch (Exception $e) {
 			return false;
