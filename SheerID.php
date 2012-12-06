@@ -126,13 +126,19 @@ class SheerID {
 
 	public function getFields($affiliation_types) {
 		//TODO: use service
-		$fields = array("FIRST_NAME", "LAST_NAME", "BIRTH_DATE");
+		$fields = array("FIRST_NAME", "LAST_NAME");
 		
-		if (array_search("VETERAN", $affiliation_types) !== false) {
+                if (array_search('STUDENT_FULL_TIME', $affiliation_types) !== FALSE || array_search('STUDENT_PART_TIME', $affiliation_types) !== FALSE || array_search('ACTIVE_DUTY', $affiliation_types) !== FALSE) {
+                        $fields[] = 'BIRTH_DATE';
+                }
+                if (array_search('FACULTY', $affiliation_types) !== FALSE) {
+                        $fields[] = 'POSTAL_CODE';
+                }
+		if (array_search('VETERAN', $affiliation_types) !== FALSE) {
 			$fields[] = "STATUS_START_DATE";
 		}
-		
-		return $fields;
+ 
+                return $fields;
 	}
 	
 	public function getOrganizationType($affiliation_types) {
