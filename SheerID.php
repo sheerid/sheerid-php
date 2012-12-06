@@ -217,14 +217,13 @@ class SheerIDRequest {
 		if ("DELETE" === $this->method) {
 	        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
-		
+
 		$data = curl_exec($ch);
 		
 		if(curl_errno($ch)){
 			$err = curl_error($ch);
 			curl_close($ch);
-			
-			throw $err;
+			throw new Exception($err);
 		} else {
 			$status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			
