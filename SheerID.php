@@ -128,7 +128,7 @@ class SheerID {
 		//TODO: use service
 		$fields = array("FIRST_NAME", "LAST_NAME");
 		
-                if (array_search('STUDENT_FULL_TIME', $affiliation_types) !== FALSE || array_search('STUDENT_PART_TIME', $affiliation_types) !== FALSE || array_search('ACTIVE_DUTY', $affiliation_types) !== FALSE) {
+                if (array_search('STUDENT_FULL_TIME', $affiliation_types) !== FALSE || array_search('STUDENT_PART_TIME', $affiliation_types) !== FALSE || array_search('ACTIVE_DUTY', $affiliation_types) !== FALSE || array_search('VETERAN', $affiliation_types) !== FALSE) {
                         $fields[] = 'BIRTH_DATE';
                 }
                 if (array_search('FACULTY', $affiliation_types) !== FALSE) {
