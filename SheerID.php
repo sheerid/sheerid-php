@@ -90,6 +90,15 @@ class SheerID {
 		return $this->getJson("/affiliationType");
 	}
 	
+	function listAssets($request_id) {
+		try {
+			$resp = $this->get("/verification/${request_id}/assets");
+			return json_decode($resp["responseText"]);
+		} catch (Exception $e) {
+			return null;
+		}
+	}
+	
 	function getAssetToken($request_id) {
 		try {
 			$resp = $this->post("/asset/token", array("requestId" => $request_id));
