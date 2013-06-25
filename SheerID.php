@@ -137,14 +137,20 @@ class SheerID {
 		//TODO: use service
 		$fields = array("FIRST_NAME", "LAST_NAME");
 		
-                if (array_search('STUDENT_FULL_TIME', $affiliation_types) !== FALSE || array_search('STUDENT_PART_TIME', $affiliation_types) !== FALSE || array_search('ACTIVE_DUTY', $affiliation_types) !== FALSE || array_search('VETERAN', $affiliation_types) !== FALSE) {
+		if (count(array_intersect(array('STUDENT_FULL_TIME','STUDENT_PART_TIME','ACTIVE_DUTY','VETERAN','MILITARY_RETIREE','RESERVIST'), $affiliation_types))) {
                         $fields[] = 'BIRTH_DATE';
                 }
                 if (array_search('FACULTY', $affiliation_types) !== FALSE) {
                         $fields[] = 'POSTAL_CODE';
                 }
-		if (array_search('VETERAN', $affiliation_types) !== FALSE) {
+		if (count(array_intersect(array('VETERAN','MILITARY_RETIREE','RESERVIST'), $affiliation_types))) {
 			$fields[] = "STATUS_START_DATE";
+		}
+		if (array_search('NON_PROFIT', $affiliation_types) !== FALSE) {
+			$fields[] = 'ID_NUMBER';
+		}
+		if (array_search('MILITARY_FAMILY', $affiliation_types) !== FALSE) {
+			$fields[] = 'RELATIONSHIP';
 		}
  
                 return $fields;
