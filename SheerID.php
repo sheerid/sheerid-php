@@ -158,11 +158,13 @@ class SheerID {
 	
 	public function getOrganizationType($affiliation_types) {
 		//TODO: improve / use service
-		if (array_search("ACTIVE_DUTY", $affiliation_types) !== false || array_search("VETERAN", $affiliation_types) !== false) {
+		if (count(array_intersect(array('ACTIVE_DUTY','VETERAN','MILITARY_RETIREE','RESERVIST','MILITARY_FAMILY'), $affiliation_types))) {
 			return "MILITARY";
-		} else {
+		} else if (count(array_intersect(array('STUDENT_FULL_TIME','STUDENT_PART_TIME','FACULTY'), $affiliation_types))) {
 			return "UNIVERSITY";
 		}
+		// TODO: map other types
+		return null;
 	}
 	
 	/* utility methods */
