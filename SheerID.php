@@ -34,6 +34,14 @@ class SheerID {
 		$this->baseUrl = $baseUrl ? $baseUrl : SHEERID_ENDPOINT_SANDBOX;
 		$this->verbose = $verbose;
 	}
+
+	function isAccessible() {
+		try {
+			return 'pong' == $this->get('/ping')['responseText'];
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 	
 	function listFields() {
 		return $this->getJson("/field");
