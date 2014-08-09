@@ -136,6 +136,10 @@ class SheerID {
 		$this->updateMetadata($requestId, array("orderId" => $orderId));
 	}
 
+	function getTemplate($templateId, $params=array()) {
+		return $this->getJson("/template/$templateId", $params);
+	}
+
 	// TODO: implement other service methods
 	// ...
 	
