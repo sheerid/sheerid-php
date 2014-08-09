@@ -37,7 +37,8 @@ class SheerID {
 
 	function isAccessible() {
 		try {
-			return 'pong' == $this->get('/ping')['responseText'];
+			$result = $this->get('/ping');
+			return 'pong' == $result['responseText'];
 		} catch (Exception $e) {
 			return false;
 		}
