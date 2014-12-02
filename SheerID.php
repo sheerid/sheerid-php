@@ -21,7 +21,9 @@
 
 define('SHEERID_API_VERSION', 0.5);
 define('SHEERID_ENDPOINT_SANDBOX', 'https://services-sandbox.sheerid.com');
+define('SHEERID_VERIFY_ENDPOINT_SANDBOX', 'https://verify-demo.sheerid.com');
 define('SHEERID_ENDPOINT_PRODUCTION', 'https://services.sheerid.com');
+define('SHEERID_VERIFY_ENDPOINT_PRODUCTION', 'https://verify.sheerid.com');
 
 class SheerID {
 	
@@ -43,7 +45,11 @@ class SheerID {
 			return false;
 		}
 	}
-	
+
+	function isSandbox() {
+		return $this->baseUrl != SHEERID_ENDPOINT_PRODUCTION;
+	}
+
 	function listFields() {
 		return $this->getJson("/field");
 	}
@@ -145,6 +151,15 @@ class SheerID {
 	// ...
 	
 	/* helper methods */
+
+	public function getVerifyUrlFromTemplateId($templateId) {
+		return $this->baseUrl . "/verify/$templateId/";
+	}
+
+	public function getVerifyUrlByName($name) {
+		$verify_base = $this->isSandbox() ? SHEERID_VERIFY_ENDPOINT_SANDBOX : SHEERID_VERIFY_ENDPOINT_PRODUCTION;
+		return "$verify_base/$name/";
+	}
 
 	public function getFields($affiliation_types) {
 		//TODO: use service
