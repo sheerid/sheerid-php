@@ -147,6 +147,21 @@ class SheerID {
 		return $this->getJson("/template/$templateId", $params);
 	}
 
+	/**
+	 * Get Person - get the person information submitted with a request, if available
+	 *   NOTE: access requires PERSON_DATA role
+	 *
+	 *   http://developer.sheerid.com/docs/verification/getPerson.html
+	 */
+	function getPerson($request_id) {
+		try {
+			$resp = $this->get("/verification/${request_id}/person");
+			return json_decode($resp["responseText"]);
+		} catch (Exception $e) {
+			return null;
+		}
+	}
+
 	// TODO: implement other service methods
 	// ...
 	
