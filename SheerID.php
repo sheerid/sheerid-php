@@ -132,7 +132,15 @@ class SheerID {
 			return false;
 		}
 	}
-	
+
+    function checkToken($token) {
+        try {
+            return $this->getJson("/token/redemption/$token");
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
 	function updateMetadata($requestId, $meta) {
 		try {
 			$this->post("/verification/${requestId}/metadata", $meta);
