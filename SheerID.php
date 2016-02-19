@@ -278,6 +278,9 @@ class SheerIDRequest {
 		if ("POST" === $this->method){
 			curl_setopt($ch, CURLOPT_POST, TRUE);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($this->headers, array(
+				'Content-type: application/x-www-form-urlencoded; charset=utf-8',
+			)));
 			
 			if ($this->verbose) {
 				error_log("[SheerID] POST $url $query");
