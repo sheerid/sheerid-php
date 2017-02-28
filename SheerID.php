@@ -30,11 +30,13 @@ class SheerID {
 	var $accessToken;
 	var $baseUrl;
 	var $verbose;
-	
-	function SheerID($accessToken, $baseUrl=null, $verbose=false){
+	var $timeout;
+
+	function SheerID($accessToken, $baseUrl=null, $verbose=false, $timeout=0){
 		$this->accessToken = $accessToken;
 		$this->baseUrl = $baseUrl ? $baseUrl : SHEERID_ENDPOINT_SANDBOX;
 		$this->verbose = $verbose;
+		$this->timeout = $timeout;
 	}
 
 	function isAccessible() {
@@ -133,13 +135,13 @@ class SheerID {
 		}
 	}
 
-    function checkToken($token) {
-        try {
-            return $this->getJson("/token/redemption/$token");
-        } catch (Exception $e) {
-            return false;
-        }
-    }
+	function checkToken($token) {
+		try {
+			return $this->getJson("/token/redemption/$token");
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 
 	function updateMetadata($requestId, $meta) {
 		try {
@@ -189,11 +191,11 @@ class SheerID {
 		$fields = array("FIRST_NAME", "LAST_NAME");
 		
 		if (count(array_intersect(array('STUDENT_FULL_TIME','STUDENT_PART_TIME','ACTIVE_DUTY','VETERAN','MILITARY_RETIREE','RESERVIST'), $affiliation_types))) {
-                        $fields[] = 'BIRTH_DATE';
-                }
-                if (array_search('FACULTY', $affiliation_types) !== FALSE) {
-                        $fields[] = 'POSTAL_CODE';
-                }
+			$fields[] = 'BIRTH_DATE';
+		}
+		if (array_search('FACULTY', $affiliation_types) !== FALSE) {
+			$fields[] = 'POSTAL_CODE';
+		}
 		if (count(array_intersect(array('VETERAN','MILITARY_RETIREE','RESERVIST'), $affiliation_types))) {
 			$fields[] = "STATUS_START_DATE";
 		}
@@ -203,8 +205,8 @@ class SheerID {
 		if (array_search('MILITARY_FAMILY', $affiliation_types) !== FALSE) {
 			$fields[] = 'RELATIONSHIP';
 		}
- 
-                return $fields;
+
+		return $fields;
 	}
 	
 	public function getOrganizationType($affiliation_types) {
@@ -221,7 +223,7 @@ class SheerID {
 	/* utility methods */
 	
 	function get($path, $params=array()) {
-		$req = new SheerIDRequest($this->accessToken, "GET", $this->url($path), $params, $this->verbose);
+		$req = new SheerIDRequest($this->accessToken, "GET", $this->url($path), $params, $this->verbose, $this->timeout);
 		return $req->execute();
 	}
 
@@ -231,12 +233,12 @@ class SheerID {
 	}
 	
 	function post($path, $params=array()) {
-		$req = new SheerIDRequest($this->accessToken, "POST", $this->url($path), $params, $this->verbose);
+		$req = new SheerIDRequest($this->accessToken, "POST", $this->url($path), $params, $this->verbose, $this->timeout);
 		return $req->execute();
 	}
 	
 	function delete($path) {
-		$req = new SheerIDRequest($this->accessToken, "DELETE", $this->url($path), array(), $this->verbose);
+		$req = new SheerIDRequest($this->accessToken, "DELETE", $this->url($path), array(), $this->verbose, $this->timeout);
 		return $req->execute();
 	}
 	
@@ -251,13 +253,15 @@ class SheerIDRequest {
 	var $params;
 	var $headers;
 	var $verbose;
-	
-	function SheerIDRequest($accessToken, $method, $url, $params=array(), $verbose=false) {
+	var $timeout;
+
+	function SheerIDRequest($accessToken, $method, $url, $params=array(), $verbose=false, $timeout=0) {
 		$this->method = $method;
 		$this->url = $url;
 		$this->params = $params;
 		$this->headers = array("Authorization: Bearer $accessToken");
 		$this->verbose = $verbose;
+		$this->timeout = $timeout;
 	}
 	
 	function execute() {
@@ -271,8 +275,7 @@ class SheerIDRequest {
 		
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers); 
-		
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		
 		if ("POST" === $this->method){
@@ -290,7 +293,7 @@ class SheerIDRequest {
 		}
 		
 		if ("DELETE" === $this->method) {
-	        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
 
 		$data = curl_exec($ch);
