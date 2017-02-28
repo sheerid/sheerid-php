@@ -31,7 +31,7 @@ class SheerID {
 	var $baseUrl;
 	var $verbose;
 	
-	function SheerID($accessToken, $baseUrl=null, $verbose=false){
+	function __construct($accessToken, $baseUrl=null, $verbose=false){
 		$this->accessToken = $accessToken;
 		$this->baseUrl = $baseUrl ? $baseUrl : SHEERID_ENDPOINT_SANDBOX;
 		$this->verbose = $verbose;
@@ -252,7 +252,7 @@ class SheerIDRequest {
 	var $headers;
 	var $verbose;
 	
-	function SheerIDRequest($accessToken, $method, $url, $params=array(), $verbose=false) {
+	function __construct($accessToken, $method, $url, $params=array(), $verbose=false) {
 		$this->method = $method;
 		$this->url = $url;
 		$this->params = $params;
